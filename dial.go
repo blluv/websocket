@@ -209,15 +209,15 @@ func handshakeRequest(ctx context.Context, urls string, opts *DialOptions, copts
 		req.Host = opts.Host
 	}
 	req.Header = opts.HTTPHeader.Clone()
-	req.Header.Set("Connection", "Upgrade")
-	req.Header.Set("Upgrade", "websocket")
-	req.Header.Set("Sec-WebSocket-Version", "13")
-	req.Header.Set("Sec-WebSocket-Key", secWebSocketKey)
+	req.Header["Connection"] = []string{"Upgrade"}
+	req.Header["Upgrade"] = []string{"websocket"}
+	req.Header["Sec-WebSocket-Version"] = []string{"13"}
+	req.Header["Sec-WebSocket-Key"] = []string{secWebSocketKey}
 	if len(opts.Subprotocols) > 0 {
-		req.Header.Set("Sec-WebSocket-Protocol", strings.Join(opts.Subprotocols, ","))
+		req.Header["Sec-WebSocket-Protocol"] = []string{strings.Join(opts.Subprotocols, ",")}
 	}
 	if copts != nil {
-		req.Header.Set("Sec-WebSocket-Extensions", copts.String())
+		req.Header["Sec-WebSocket-Extensions"] = []string{copts.String()}
 	}
 
 	resp, err := opts.HTTPClient.Do(req)
